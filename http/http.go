@@ -46,7 +46,7 @@ func SendRequest(method string, url string, user string, passwd string, data str
 
 	//If POST verify Dashboard was published
 	if method == "POST" && res.Status != "200 OK" {
-		return "", fmt.Errorf("got " + res.Status + " when sending dashboard to datadog; expecting 200")
+		return "", fmt.Errorf("got " + res.Status + " on call to opsman; expecting 200")
 	}
 
 	return string(body), nil
