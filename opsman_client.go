@@ -8,12 +8,14 @@ import (
 	http "github.com/pivotalservices/opsmanclient/http"
 )
 
+// Client - Ops Manager API client
 type Client struct {
 	opsmanIP       string
 	opsmanUsername string
 	opsmanPassword string
 }
 
+// New creates a Client for calling Ops Man API
 func New(opsmanIP, opsmanUsername, opsmanPassword string) *Client {
 	return &Client{
 		opsmanIP:       opsmanIP,
@@ -22,6 +24,7 @@ func New(opsmanIP, opsmanUsername, opsmanPassword string) *Client {
 	}
 }
 
+// GetAPIVersion returns the Ops Man API version
 func (c *Client) GetAPIVersion() (string, error) {
 	url := "https://" + c.opsmanIP + "/api/api_version"
 	resp, err := http.SendRequest("GET", url, c.opsmanUsername, c.opsmanPassword, "")
@@ -37,6 +40,20 @@ func (c *Client) GetAPIVersion() (string, error) {
 	}
 
 	return ver.Version, nil
+}
+
+// ValidateAPIVersion checks for a supported API version
+func ValidateAPIVersion(client *Client) error {
+	version, err := client.GetAPIVersion()
+	if err != nil {
+		return err
+	}
+
+	if version != "2.0" {
+		return fmt.Errorf("This version of Ops Manager (using api version ''" + version + "') is not supported")
+	}
+
+	return nil
 }
 
 // GetCFDeployment returns the Elastic-Runtime deployment created by your Ops Manager

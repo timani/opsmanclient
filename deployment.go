@@ -1,7 +1,5 @@
 package opsmanclient
 
-import "fmt"
-
 // NewDeployment creates a new installation deployment
 func NewDeployment(installation *InstallationSettings, cfRelease string) *Deployment {
 
@@ -67,20 +65,6 @@ func NewDeployment(installation *InstallationSettings, cfRelease string) *Deploy
 	}
 
 	return deployment
-}
-
-// ValidateAPIVersion checks for a supported API version
-func ValidateAPIVersion(client *Client) error {
-	version, err := client.GetAPIVersion()
-	if err != nil {
-		return err
-	}
-
-	if version != "2.0" {
-		return fmt.Errorf("This version of Ops Manager (using api version ''" + version + "') is not supported")
-	}
-
-	return nil
 }
 
 func getPartitions(installation *InstallationSettings, productName, jobInstallationName string) []Partition {

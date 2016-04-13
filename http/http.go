@@ -8,30 +8,26 @@ import (
 	"net/http"
 )
 
-// SendRequest sends http requests
+// SendRequest sends http requests to Ops Man
 func SendRequest(method string, url string, user string, passwd string, data string) (string, error) {
-	//Ignore Self Signed SSL
+	// TODO: Don't skip ssl validation
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
-	//make Request Object
 	req, err := http.NewRequest(method, url, bytes.NewBufferString(data))
 	if err != nil {
 		return "", err
 	}
 
-	//Set Auth
 	if user != "" && passwd != "" {
 		req.SetBasicAuth(user, passwd)
 	}
 
-	//If POST set header
 	if method == "POST" {
 		req.Header.Add("Content-type", "application/json")
 	}
 
-	//Make Client http Request
 	client := http.Client{Transport: tr}
 	res, err := client.Do(req)
 	if err != nil {
@@ -44,7 +40,6 @@ func SendRequest(method string, url string, user string, passwd string, data str
 		return "", err
 	}
 
-	//If POST verify Dashboard was published
 	if method == "POST" && res.Status != "200 OK" {
 		return "", fmt.Errorf("got " + res.Status + " on call to opsman; expecting 200")
 	}
