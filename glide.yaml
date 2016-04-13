@@ -1,0 +1,4 @@
+package: github.com/pivotalservices/opsmanclient
+import:
+- package: github.com/onsi/ginkgo
+- package: github.com/onsi/gomega

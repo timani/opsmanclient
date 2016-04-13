@@ -11,9 +11,9 @@ import (
 	"testing"
 )
 
-func TestDatadogDashboardGen(t *testing.T) {
+func TestOpsManClient(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "DatadogDashboardGen Suite")
+	RunSpecs(t, "OpsManClient Suite")
 }
 
 func fixture(name string) string {
