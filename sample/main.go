@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/pivotalservices/datadog-dashboard-gen/opsman"
+	"github.com/pivotalservices/opsmanclient"
 )
 
 func main() {
@@ -17,26 +17,26 @@ func main() {
 	saveFile := flag.String("f", "installation.json", "Save deployment to JSON file (defaults to installation.json)")
 	flag.Parse()
 
-	opsmanClient := opsman.New(*opsmanIP, *opsmanUser, *opsmanPassword)
+	opsman := opsmanclient.New(*opsmanIP, *opsmanUser, *opsmanPassword)
 
 	// Check we are using a supported Ops Man
-	err := opsman.ValidateAPIVersion(opsmanClient)
+	err := opsmanclient.ValidateAPIVersion(opsman)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Get installation settings from Ops Man foundation
-	installation, err := opsmanClient.GetInstallationSettings()
+	installation, err := opsman.GetInstallationSettings()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	products, err := opsmanClient.GetProducts()
+	products, err := opsman.GetProducts()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	deployment, err := opsmanClient.GetCFDeployment(installation, products)
+	deployment, err := opsman.GetCFDeployment(installation, products)
 	if err != nil {
 		log.Fatal(err)
 	}
