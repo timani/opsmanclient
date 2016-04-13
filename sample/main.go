@@ -36,11 +36,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	deployment, err := opsman.GetCFDeployment(installation, products)
+	cf, err := opsman.GetCFDeployment(installation, products)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Your deployment is using CF release:", deployment.Release)
+	fmt.Println("Your CF deployment release:", cf.Release)
 
 	d, err := json.Marshal(installation)
 	if err != nil {
