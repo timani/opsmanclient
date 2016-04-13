@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
-	. "github.com/pivotalservices/opsmanclient/opsmanclient"
+	. "github.com/pivotalservices/opsmanclient"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

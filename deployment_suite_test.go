@@ -17,7 +17,7 @@ func TestOpsManClient(t *testing.T) {
 }
 
 func fixture(name string) string {
-	filePath := path.Join("../fixtures", name)
+	filePath := path.Join("fixtures", name)
 	contents, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		panic(fmt.Sprintf("could not read fixture: %s", name))
