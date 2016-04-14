@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	c          *opsmanclient.Client
+	c          *opsmanclient.OpsManAPI
 	opsman     *mockopsman.OpsManager
 	shouldFail bool
 )

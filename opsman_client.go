@@ -4,28 +4,40 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	nhttp "net/http"
 
-	http "github.com/pivotalservices/opsmanclient/http"
+	"github.com/pivotalservices/opsmanclient/http"
 )
 
-// Client - Ops Manager API client
-type Client struct {
-	opsmanURL      string
-	opsmanUsername string
-	opsmanPassword string
+// OpsManAPI implements the Ops Manager API
+type OpsManAPI struct {
+	opsmanURL  string
+	HTTPClient HTTPClient
+}
+
+// HTTPClient is the interface for making HTTP calls to Ops Man API
+type HTTPClient interface {
+	Get(url string) (resp *nhttp.Response, err error)
+	Post(url string, bodyType string, body io.Reader) (resp *nhttp.Response, err error)
 }
 
 // New creates a Client for calling Ops Man API
-func New(opsmanURL, opsmanUsername, opsmanPassword string) *Client {
-	return &Client{
-		opsmanURL:      opsmanURL,
-		opsmanUsername: opsmanUsername,
-		opsmanPassword: opsmanPassword,
+func New(opsmanURL, opsmanUsername, opsmanPassword string) *OpsManAPI {
+	return &OpsManAPI{
+		opsmanURL: opsmanURL,
+		HTTPClient: http.New(http.Config{
+			NoFollowRedirect:                  false,
+			DisableTLSCertificateVerification: true, // TODO: Let user decide
+			Username: opsmanUsername,
+			Password: opsmanPassword,
+		}),
 	}
 }
 
 // GetCFDeployment returns the Elastic-Runtime deployment created by your Ops Manager
-func (c *Client) GetCFDeployment(installation *InstallationSettings, products []Products) (*Deployment, error) {
+func (c *OpsManAPI) GetCFDeployment(installation *InstallationSettings, products []Products) (*Deployment, error) {
 	cfRelease := getProductGUID(products, "cf")
 	if cfRelease == "" {
 		return nil, fmt.Errorf("cf release not found")
@@ -35,10 +47,19 @@ func (c *Client) GetCFDeployment(installation *InstallationSettings, products []
 }
 
 // GetInstallationSettings retrieves installation settings for cf deployment
-func (c *Client) GetInstallationSettings() (*InstallationSettings, error) {
-	resp, err := http.SendRequest("GET", fmt.Sprintf("%s/api/installation_settings", c.opsmanURL), c.opsmanUsername, c.opsmanPassword, "")
+func (c *OpsManAPI) GetInstallationSettings() (*InstallationSettings, error) {
+	resp, err := c.HTTPClient.Get(fmt.Sprintf("%s/api/installation_settings", c.opsmanURL))
+	if err != nil {
+		return nil, err
+	}
 
-	res := bytes.NewBufferString(resp)
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	res := bytes.NewBufferString(string(body))
 	decoder := json.NewDecoder(res)
 	var installation *InstallationSettings
 	err = decoder.Decode(&installation)
@@ -47,12 +68,19 @@ func (c *Client) GetInstallationSettings() (*InstallationSettings, error) {
 }
 
 // GetProducts returns all the products in an OpsMan installation
-func (c *Client) GetProducts() ([]Products, error) {
-	resp, err := http.SendRequest("GET", fmt.Sprintf("%s/api/installation_settings/products", c.opsmanURL), c.opsmanUsername, c.opsmanPassword, "")
+func (c *OpsManAPI) GetProducts() ([]Products, error) {
+	resp, err := c.HTTPClient.Get(fmt.Sprintf("%s/api/installation_settings/products", c.opsmanURL))
 	if err != nil {
 		return nil, err
 	}
-	res := bytes.NewBufferString(resp)
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	res := bytes.NewBufferString(string(body))
 	decoder := json.NewDecoder(res)
 	var products []Products
 	err = decoder.Decode(&products)

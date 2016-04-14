@@ -4,17 +4,23 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-
-	http "github.com/pivotalservices/opsmanclient/http"
+	"io/ioutil"
 )
 
 // GetAPIVersion returns the Ops Man API version
-func (c *Client) GetAPIVersion() (string, error) {
-	resp, err := http.SendRequest("GET", fmt.Sprintf("%s/api/api_version", c.opsmanURL), c.opsmanUsername, c.opsmanPassword, "")
+func (c *OpsManAPI) GetAPIVersion() (string, error) {
+	resp, err := c.HTTPClient.Get(fmt.Sprintf("%s/api/api_version", c.opsmanURL))
 	if err != nil {
 		return "", err
 	}
-	res := bytes.NewBufferString(resp)
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	res := bytes.NewBufferString(string(body))
 	decoder := json.NewDecoder(res)
 	var ver Version
 	err = decoder.Decode(&ver)
