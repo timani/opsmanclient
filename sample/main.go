@@ -13,11 +13,11 @@ import (
 func main() {
 	opsmanUser := flag.String("u", "admin", "Ops Manager User")
 	opsmanPassword := flag.String("p", "password", "Ops Manager Password")
-	opsmanIP := flag.String("ip", "192.168.200.10", "Ops Manager IP")
+	opsmanURL := flag.String("url", "https://192.168.200.10", "Ops Manager URL")
 	saveFile := flag.String("f", "installation.json", "Save deployment to JSON file (defaults to installation.json)")
 	flag.Parse()
 
-	opsman := opsmanclient.New("https://"+*opsmanIP, *opsmanUser, *opsmanPassword)
+	opsman := opsmanclient.New(*opsmanURL, *opsmanUser, *opsmanPassword)
 
 	// Check we are using a supported Ops Man
 	version, err := opsman.GetAPIVersion()
