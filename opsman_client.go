@@ -10,50 +10,18 @@ import (
 
 // Client - Ops Manager API client
 type Client struct {
-	opsmanIP       string
+	opsmanURL      string
 	opsmanUsername string
 	opsmanPassword string
 }
 
 // New creates a Client for calling Ops Man API
-func New(opsmanIP, opsmanUsername, opsmanPassword string) *Client {
+func New(opsmanURL, opsmanUsername, opsmanPassword string) *Client {
 	return &Client{
-		opsmanIP:       opsmanIP,
+		opsmanURL:      opsmanURL,
 		opsmanUsername: opsmanUsername,
 		opsmanPassword: opsmanPassword,
 	}
-}
-
-// GetAPIVersion returns the Ops Man API version
-func (c *Client) GetAPIVersion() (string, error) {
-	url := "https://" + c.opsmanIP + "/api/api_version"
-	resp, err := http.SendRequest("GET", url, c.opsmanUsername, c.opsmanPassword, "")
-	if err != nil {
-		return "", err
-	}
-	res := bytes.NewBufferString(resp)
-	decoder := json.NewDecoder(res)
-	var ver Version
-	err = decoder.Decode(&ver)
-	if err != nil {
-		return "", err
-	}
-
-	return ver.Version, nil
-}
-
-// ValidateAPIVersion checks for a supported API version
-func ValidateAPIVersion(client *Client) error {
-	version, err := client.GetAPIVersion()
-	if err != nil {
-		return err
-	}
-
-	if version != "2.0" {
-		return fmt.Errorf("This version of Ops Manager (using api version ''" + version + "') is not supported")
-	}
-
-	return nil
 }
 
 // GetCFDeployment returns the Elastic-Runtime deployment created by your Ops Manager
@@ -68,8 +36,8 @@ func (c *Client) GetCFDeployment(installation *InstallationSettings, products []
 
 // GetInstallationSettings retrieves installation settings for cf deployment
 func (c *Client) GetInstallationSettings() (*InstallationSettings, error) {
-	url := "https://" + c.opsmanIP + "/api/installation_settings/"
-	resp, err := http.SendRequest("GET", url, c.opsmanUsername, c.opsmanPassword, "")
+	resp, err := http.SendRequest("GET", fmt.Sprintf("%s/api/installation_settings", c.opsmanURL), c.opsmanUsername, c.opsmanPassword, "")
+
 	res := bytes.NewBufferString(resp)
 	decoder := json.NewDecoder(res)
 	var installation *InstallationSettings
@@ -80,8 +48,7 @@ func (c *Client) GetInstallationSettings() (*InstallationSettings, error) {
 
 // GetProducts returns all the products in an OpsMan installation
 func (c *Client) GetProducts() ([]Products, error) {
-	url := "https://" + c.opsmanIP + "/api/installation_settings/products"
-	resp, err := http.SendRequest("GET", url, c.opsmanUsername, c.opsmanPassword, "")
+	resp, err := http.SendRequest("GET", fmt.Sprintf("%s/api/installation_settings/products", c.opsmanURL), c.opsmanUsername, c.opsmanPassword, "")
 	if err != nil {
 		return nil, err
 	}

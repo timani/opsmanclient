@@ -7,9 +7,28 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/pivotalservices/opsmanclient"
+	"github.com/pivotalservices/opsmanclient/mockopsman"
 
 	"testing"
 )
+
+var (
+	c          *opsmanclient.Client
+	opsman     *mockopsman.OpsManager
+	shouldFail bool
+)
+var _ = BeforeEach(func() {
+	opsman = mockopsman.New()
+})
+
+var _ = AfterEach(func() {
+	opsman.Close()
+})
+
+var _ = JustBeforeEach(func() {
+	c = opsmanclient.New(opsman.URL, "admin", "admin")
+})
 
 func TestOpsManClient(t *testing.T) {
 	RegisterFailHandler(Fail)

@@ -17,10 +17,15 @@ func main() {
 	saveFile := flag.String("f", "installation.json", "Save deployment to JSON file (defaults to installation.json)")
 	flag.Parse()
 
-	opsman := opsmanclient.New(*opsmanIP, *opsmanUser, *opsmanPassword)
+	opsman := opsmanclient.New("https://"+*opsmanIP, *opsmanUser, *opsmanPassword)
 
 	// Check we are using a supported Ops Man
-	err := opsmanclient.ValidateAPIVersion(opsman)
+	version, err := opsman.GetAPIVersion()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	opsmanclient.ValidateAPIVersion(version)
 	if err != nil {
 		log.Fatal(err)
 	}
