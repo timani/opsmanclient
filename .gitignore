@@ -25,4 +25,4 @@ _testmain.go
 vendor
 *.coverprofile
 installation.json
-sample
+sample/sample
