@@ -17,7 +17,7 @@ func main() {
 	saveFile := flag.String("f", "installation.json", "Save deployment to JSON file (defaults to installation.json)")
 	flag.Parse()
 
-	opsman := opsmanclient.New(*opsmanURL, *opsmanUser, *opsmanPassword)
+	opsman := opsmanclient.New(*opsmanURL, *opsmanUser, *opsmanPassword, "", false)
 
 	// Check we are using a supported Ops Man
 	version, err := opsman.GetAPIVersion()

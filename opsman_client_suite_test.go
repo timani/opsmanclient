@@ -27,7 +27,7 @@ var _ = AfterEach(func() {
 })
 
 var _ = JustBeforeEach(func() {
-	c = opsmanclient.New(opsman.URL, "admin", "admin")
+	c = opsmanclient.New(opsman.URL, "admin", "admin", "", false)
 })
 
 func TestOpsManClient(t *testing.T) {

@@ -1,8 +1,56 @@
-hash: d73f2d5bf715be65edc5ceb638383ae5b2b4020a2e8f5341769cd062eaa95af4
-updated: 2016-04-13T15:16:39.463153263-06:00
+hash: ecd0ba12cf35d86f148ae8067617ac38e71a0f4e25da9264a62b217f1f4e3060
+updated: 2016-04-17T22:54:12.136186501-06:00
 imports:
+- name: github.com/gorilla/context
+  version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
+- name: github.com/gorilla/mux
+  version: 0eeaf8392f5b04950925b8a69fe70f110fa7cbfc
 - name: github.com/onsi/ginkgo
   version: 2c2e9bb47b4e44067024f29339588cac8b34dd12
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/failer
+  - internal/remote
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - types
+  - internal/containernode
+  - internal/leafnodes
+  - internal/spec
+  - internal/specrunner
 - name: github.com/onsi/gomega
   version: 7ce781ea776b2fd506491011353bded2e40c8467
+  subpackages:
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/testingtsupport
+  - matchers
+  - types
+  - internal/oraclematcher
+  - format
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+- name: github.com/op/go-logging
+  version: 970db520ece77730c7e4724c61121037378659d9
+- name: github.com/pivotalservices/gtils
+  version: 30b7bd6468fb8fa1e1c938b665ce08a9f9e102de
+  subpackages:
+  - command
+  - http
+  - uaa
+- name: github.com/technoweenie/multipartstreamer
+  version: a90a01d73ae432e2611d178c18367fbaa13e0154
+- name: github.com/xchapter7x/lo
+  version: aa2602d0e8e8647f0ce7b53109b37040941915aa
+- name: golang.org/x/crypto
+  version: 1777f3ba8c1fed80fcaec3317e3aaa4f627764d2
+  subpackages:
+  - ssh
+  - curve25519
 devImports: []

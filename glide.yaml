@@ -2,3 +2,8 @@ package: github.com/pivotalservices/opsmanclient
 import:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega
+- package: github.com/pivotalservices/gtils
+  subpackages:
+  - command
+  - http
+  - uaa
